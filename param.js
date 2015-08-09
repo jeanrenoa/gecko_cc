@@ -21,3 +21,15 @@ exports.viewFilterParams_CEM_Total_User_Form_Posts = {
   ShowZeroValues: true,
   CountOnly: false
 }
+
+exports.viewFilterParams_CEM_User_Distribution = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '661633E2-6A1C-4CE7-B7A5-8CBF754BE66D',
+  CoreFilterID: 'AE9B7BAB-E1B3-4067-91A6-5B0B2BDF507F',
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+}

@@ -57,7 +57,6 @@ function CenterCode() {
         console.log("result:", result);
         var data = [];
         data = processResult(result);
-        console.log("??:", data.pop());
         callback(data);
       });
     });
