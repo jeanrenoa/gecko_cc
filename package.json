@@ -1,0 +1,19 @@
+{
+  "name": "gecko_cc",
+  "version": "1.0.0",
+  "description": "dependencies for this gecko_cc project",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeanrenoa/gecko_cc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeanrenoa/gecko_cc/issues"
+  },
+  "homepage": "https://github.com/jeanrenoa/gecko_cc"
+}

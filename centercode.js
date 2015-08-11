@@ -47,7 +47,6 @@ function CenterCode() {
       results.push(data);
     }
     return results;
-    //return true;
   };
 
   this.getData = function(url, viewFilterParams, callback){

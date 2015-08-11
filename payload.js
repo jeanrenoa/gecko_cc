@@ -60,7 +60,7 @@ exports.gecko_map = {
 exports.gecko_number = {
   "item": [
     {
-      "value": 6500,
+      "value": 0,
       "text": "Total User Forum Posts"
     },
     {

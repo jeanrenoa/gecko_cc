@@ -3,15 +3,32 @@ var CronJob = require('cron').CronJob;
 var CenterCode = require('./centercode');
 var centercode = new CenterCode();
 
-var param = require('./param.js');
+var param = require('./param');
 
 var Geckoboard = require('./geckoboard');
 var geckoboard = new Geckoboard();
+
+var ProjectDatabase = require('./database');
 
 var url_preview_site = 'http://preview.beta.autodesk.com/cai/005/User.asmx?WSDL';
 var url_live_site = 'http://beta.autodesk.com/cai/005/User.asmx?WSDL';
 
 var param_cc;
+
+var proj_database = new ProjectDatabase({
+  project: 'AutoCAD Customer Coucil',
+  total_Forum_Posts: 0,
+  download_Alpha1: 0
+});
+
+updateDatabase = function(data) {
+  proj_database.total_Forum_Posts = data;
+  console.log('start to udpate database.')
+  proj_database.save(function(err){
+    if (err) throw err;
+    console.log('Database successfully updated.');
+  });
+};
 
 var job_Total_Forum_Posts = new CronJob('00 * * * * 0-6', function(){
   // Run everyday at 12:00:00 AM
@@ -19,9 +36,14 @@ var job_Total_Forum_Posts = new CronJob('00 * * * * 0-6', function(){
   console.log('Start Total Forum Posts Query.');
   centercode.getData(url_live_site, param_cc, function(data){
     //console.log("data:", data[1]['# of Total User Forum Posts']);
-
     geckoboard.geckoPush(data, "Total Forum Posts");
-
+    console.log("data:", data[1]['# of Total User Forum Posts']);
+    updateDatabase(data[1]['# of Total User Forum Posts'], function() {
+      proj_database.find({},function(err, res){
+        if (err) throw err;
+        console.log("database result:", res);
+      });
+    });
   });
   console.log('Complete Total Forum Posts Push.');
   // Pull data from CenterCode website
@@ -35,9 +57,7 @@ var job_User_Distribution = new CronJob('30 * * * * 0-6', function(){
   param_cc = param.viewFilterParams_CEM_User_Distribution;
   console.log('Start User Distribution Query.');
   centercode.getData(url_live_site, param_cc, function(data){
-
     geckoboard.geckoPush(data, "User Distribution");
-
   });
   console.log('Complete User Distribution Push.');
   // Pull data from CenterCode website
