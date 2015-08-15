@@ -64,7 +64,7 @@ exports.gecko_number = {
       "text": "Total User Forum Posts"
     },
     {
-      "value": 6000
+      "value": 0
     }
   ]
 }

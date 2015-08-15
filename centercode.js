@@ -24,6 +24,7 @@ function CenterCode() {
     var data, fieldNames, i, len, name, ref, results, val, value;
     fieldNames = getFieldNames(result.ProjectViewFilterResult.Headers);
     //console.log(fieldNames);
+    //console.log("-->", result.ProjectViewFilterResult.Values.Value.slice(1));
     ref = result.ProjectViewFilterResult.Values.Value.slice(1);
     results = [];
     for (i = 0, len = ref.length; i < len; i++) {
@@ -42,10 +43,10 @@ function CenterCode() {
       }
       data = {};
       data[name] = val;
-      //results.push(console.log(data));
-      console.log(data);
+      //console.log("Process Data:", data);
       results.push(data);
     }
+    //console.log("-->", results);
     return results;
   };
 
