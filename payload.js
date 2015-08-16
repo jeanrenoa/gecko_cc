@@ -8,6 +8,8 @@ exports.gecko_text = {
   ]
 }
 
+/*
+// Linechart sample
 exports.gecko_linechart = {
   "x_axis": {
     "labels": [
@@ -32,6 +34,19 @@ exports.gecko_linechart = {
         1.18137, 1.16923, 1.16434, 1.14420,
         1.17542, 1.19759, 1.18098, 1.20513
       ]
+    }
+  ]
+}
+*/
+
+exports.gecko_linechart = {
+  "x_axis": {
+    "type": "datetime"
+  },
+  "series": [
+    {
+      "name": "",
+      "data": []
     }
   ]
 }
@@ -61,7 +76,7 @@ exports.gecko_number = {
   "item": [
     {
       "value": 0,
-      "text": "Total User Forum Posts"
+      "text": "Please fill in text"
     },
     {
       "value": 0

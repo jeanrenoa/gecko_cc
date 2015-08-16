@@ -9,6 +9,7 @@ function Geckoboard() {
   var geckoboard_widget_push_url_User_Distribution = 'https://push.geckoboard.com/v1/send/155162-d5fb05df-a6b2-4605-adba-47920ede488d';
   var geckoboard_widget_push_url_User_Feedback = 'https://push.geckoboard.com/v1/send/155162-1f320517-d4d1-40a1-a333-454b8b2366f2';
   var geckoboard_widget_push_url_Alpha1_x64_Download = 'https://push.geckoboard.com/v1/send/156024-7420556f-4d00-467a-89db-53457a9e1e54';
+  var geckoboard_widget_push_url_Total_Project_Login = 'https://push.geckoboard.com/v1/send/156024-d354787b-f44f-4558-9870-f8afc881576a';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -18,7 +19,6 @@ function Geckoboard() {
         res = payload_format.gecko_number;
         res.item[0].value = val_current;
         res.item[1].value = val_pre;
-        console.log("payload:", res);
         break;
       case "User Distribution":
         res = payload_format.gecko_map;
@@ -30,11 +30,17 @@ function Geckoboard() {
         res = payload_format.gecko_number;
         res.item[0].value = val_current;
         res.item[1].value = val_pre;
-        console.log("payload:", res);
+        break;
+      case "Total Project Login":
+        res = payload_format.gecko_linechart;
+        res.series[0].name = "Nautilus Alpha1";
+        res.series[0].data = [];
+        res.series[0].data = val_current;
         break;
       default:
         res = null;
     }
+    console.log("Payload:", res);
     return res;
   }
 
@@ -58,6 +64,9 @@ function Geckoboard() {
         break;
       case "Alpha1 64bit Download":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Alpha1_x64_Download;
+        break;
+      case "Total Project Login":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Total_Project_Login;
         break;
       default:
         geckoboard_widget_push_url = '';

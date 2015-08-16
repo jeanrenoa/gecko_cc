@@ -15,28 +15,46 @@ var param_cc;
 var data_pre;
 
 var mongodb = require('./database');
+
+// Define the Schema for different collections in Database
 var Schema = mongodb.mongoose.Schema;
 var projectSchema = new Schema({
   project: String,
   total_Forum_Posts: Number,
   download_Alpha1: Number,
-  date: Date
+  total_Project_Login: Number,
+  date: Date,
+  baseline: Boolean,
+  Week: Number
 });
+
 var Project = mongodb.mongoose.model('Project', projectSchema);
 
 var proj_database = new Project({
-  project: 'AutoCAD Customer Council',
-  total_Forum_Posts: 0,
-  download_Alpha1: 0
+  project: 'AutoCAD Customer Council'
 });
 
-updateDatabase = function(data) {
-  proj_database.total_Forum_Posts = data;
+updateDatabase = function(key, data, date, callback) {
+  proj_database.date = date;
+  switch (key) {
+    case "total_Project_Login":
+      proj_database.total_Project_Login = data;
+      break;
+    case "total_Forum_Posts":
+      proj_database.total_Forum_Posts = data;
+      break;
+    case "download_Alpha1":
+      proj_database.download_Alpha1 = data;
+      break;
+    default:
+
+  }
   console.log('start to udpate database.')
   proj_database.save(function(err){
     if (err) throw err;
     console.log('Database successfully updated.');
   });
+  callback();
 };
 
 queryDatabase = function(callback) {
@@ -47,6 +65,7 @@ queryDatabase = function(callback) {
   });
 };
 
+/*
 runRightNow = function() {
   param_cc = param.viewFilterParams_CEM_Nautilus_Alpha1_Download_x64;
   console.log('Start Total Forum Posts Query.');
@@ -65,6 +84,59 @@ runRightNow = function() {
     geckoboard.geckoPush(data_current, data_pre, "Alpha1 64bit Download");
     //console.log(data);
     console.log('Complete Total Forum Posts Push.');
+  });
+};
+*/
+
+var getDateToday = function() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth();
+  var date = now.getDate();
+  if (month < 10) {
+    month = "0" + month;
+  }
+  if (date < 10) {
+    date = "0" + date;
+  }
+  var today = year + "-" + month + "-" + date;
+  console.log("Today is", today);
+  return today;
+};
+
+runRightNow = function() {
+  var today = getDateToday();
+
+  param_cc = param.viewFilterParams_CEM_Project_Login;
+  console.log('Start Total Forum Posts Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var login_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['# of Project Logins'] != null) {
+        login_counts = login_counts + parseInt(data[i]['# of Project Logins']);
+      }
+    }
+    console.log("Login Numbers:", login_counts);
+
+    var data_current = [];
+    data_current[0] = [today, login_counts];
+    data_current[1] = ["2015-07-17", 2000];
+    data_current[2] = ["2015-07-18", 1400];
+    data_pre = 0;
+    geckoboard.geckoPush(data_current, data_pre, "Total Project Login");
+
+    //console.log(data);
+    console.log('Complete Total Forum Posts Push.');
+
+    updateDatabase("total_Project_Login", login_counts, today, function() {
+      console.log("Start to display Database.")
+      Project.find({}, function(err, res){
+        if (err) throw err;
+        console.log("database result:", res);
+      });
+    });
+
   });
 };
 
@@ -102,7 +174,7 @@ true, // Start the job right now
 */
 
 /*
-var job_Total_Forum_Posts = new CronJob('00 * * * * 0-6', function(){
+var job_Alpha_Download = new CronJob('00 * * * * 0-6', function(){
   // Run everyday at 12:00:00 AM
   queryDatabase(function(err, res){
     data_pre = res[0]['total_Forum_Posts'];
