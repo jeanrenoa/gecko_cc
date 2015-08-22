@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jeanrenoa/gecko_cc/issues"
   },
-  "homepage": "https://github.com/jeanrenoa/gecko_cc"
+  "homepage": "https://github.com/jeanrenoa/gecko_cc",
+  "dependencies": {
+    "async": "^1.4.2"
+  }
 }

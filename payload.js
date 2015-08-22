@@ -73,10 +73,11 @@ exports.gecko_map = {
 }
 
 exports.gecko_number = {
+  "absolute": true,
   "item": [
     {
       "value": 0,
-      "text": "Please fill in text"
+      "text": "Compared with previous value"
     },
     {
       "value": 0
