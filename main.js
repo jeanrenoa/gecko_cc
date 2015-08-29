@@ -343,7 +343,7 @@ var jobNumberMaestroSP1Beta1x86Download = function() {
     console.log("Database Query completes.");
   });
 
-  param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x64;
+  param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x86;
   console.log('Start Total Maestro SP1 Beta1 32bit Downloads Query.');
 
   centercode.getData(url_live_site, param_cc, function(data){
@@ -519,7 +519,9 @@ var jobBarChartWeeklyAlphaDownload = function() {
 
     data_current[0] = weekly_date;
     data_current[1] = weekly_num;
-    geckoboard.geckoPush(data_current, data_pre, "Weekly Alpha1 Download");
+    if (weekly_date.length != 0) {
+      geckoboard.geckoPush(data_current, data_pre, "Weekly Alpha1 Download");
+    }
     console.log('Complete Weekly Alpha1 Download Push.');
   });
 };
@@ -529,8 +531,9 @@ var runRightNow = function() {
   //jobNumberForumPost();
   //jobBarChartWeeklyAlphaDownload();
   //jobNumberMaestroSP1Beta1x64Download();
-  //jobNumberMaestroSP1Beta1x86Download();
+  jobNumberMaestroSP1Beta1x86Download();
 
+/*
   setTimeout(function () {
     jobNumberForumPost();
   },
@@ -566,7 +569,7 @@ var runRightNow = function() {
   },
   120000 // milliseconds
   );
-
+*/
 };
 
 runRightNow();
