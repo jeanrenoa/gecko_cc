@@ -84,3 +84,53 @@ exports.gecko_number = {
     }
   ]
 }
+
+exports.gecko_number1 = {
+  "item": [
+    {
+      "value": 0,
+      "text": ""
+    }
+  ]
+}
+
+exports.gecko_bar = {
+  "x_axis": {
+    "type": "datetime",
+    "labels": []
+  },
+  "series": [
+    {
+      "data": []
+    }
+  ]
+}
+
+/*
+// Bar Chart Example
+exports.gecko_bar = {
+  "x_axis": {
+    "type": "datetime",
+    "labels": [
+      "2014-01",
+      "2014-02",
+      "2014-03",
+      "2014-04",
+      "2014-05",
+      "2014-06"
+    ]
+  },
+  "series": [
+    {
+      "data": [
+        71173,
+        57624,
+        64851,
+        60486,
+        60500,
+        62908
+      ]
+    }
+  ]
+}
+*/

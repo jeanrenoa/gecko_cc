@@ -8,7 +8,7 @@ var param = require('./param');
 var Geckoboard = require('./geckoboard');
 var geckoboard = new Geckoboard();
 
-var async = require('async');
+//var async = require('async');
 
 var url_preview_site = 'http://preview.beta.autodesk.com/cai/005/User.asmx?WSDL';
 var url_live_site = 'http://beta.autodesk.com/cai/005/User.asmx?WSDL';
@@ -98,7 +98,7 @@ updateDatabase = function(key, data, date, callback) {
 queryDatabase = function(callback) {
   Project.find({}, function(err, res){
     if (err) throw err;
-    console.log("Database results:", res, typeof res);
+    //console.log("Database results:", res, typeof res);
     callback(err, res);
   });
 };
@@ -106,7 +106,7 @@ queryDatabase = function(callback) {
 var getDateToday = function() {
   var now = new Date();
   var year = now.getFullYear();
-  var month = now.getMonth();
+  var month = now.getMonth() + 1;
   var date = now.getDate();
   if (month < 10) {
     month = "0" + month;
@@ -121,7 +121,7 @@ var getDateToday = function() {
 var getLastDate = function(n) {
   var now = new Date();
   var year = now.getFullYear();
-  var month = now.getMonth();
+  var month = now.getMonth() + 1;
   var date = now.getDate() - n;
   if (month < 10) {
     month = "0" + month;
@@ -146,6 +146,22 @@ var getFormattedDate = function(date) {
   return (year + "-" + month + "-" + date);
 };
 
+Date.prototype.getWeek = function(start) {
+    //Calcing the starting point
+    start = start || 0;
+    var today = new Date(this.setHours(0, 0, 0, 0));
+    var day = today.getDay() - start;
+    var date = today.getDate() - day;
+
+    // Grabbing Start/End Dates
+    var StartDate = new Date(today.setDate(date));
+    var EndDate = new Date(today.setDate(date + 6));
+    return [StartDate, EndDate];
+}
+//test code
+//var Dates = new Date("2015-8-31").getWeek();
+//console.log(Dates[0].toLocaleDateString() + ' to '+ Dates[1].toLocaleDateString());
+
 var jobNumberForumPost = function() {
   var today = getDateToday();
   console.log("Today is", today);
@@ -158,7 +174,7 @@ var jobNumberForumPost = function() {
       console.log("Nothing in database now.");
     }
     else {
-      console.log("Query:", res[0]["date"]);
+      console.log("The earliest document on:", res[0]["date"]);
     }
     console.log("Database Query completes.");
   });
@@ -186,7 +202,7 @@ var jobNumberForumPost = function() {
     updateDatabase("total_Forum_Posts", data_current, today, function() {
       Project.find({},function(err, res){
         if (err) throw err;
-        console.log("Total Forum Post in database is updated:\n", res);
+        console.log("Total Forum Post in database is updated.");
       });
     });
   });
@@ -204,7 +220,7 @@ var jobNumberAlphaDownload = function() {
       console.log("Nothing in database now.");
     }
     else {
-      console.log("Query:", res[0]["date"]);
+      console.log("The earliest document on::", res[0]["date"]);
     }
     console.log("Database Query completes.");
   });
@@ -238,7 +254,7 @@ var jobNumberAlphaDownload = function() {
     updateDatabase("total_download_Alpha1", data_current, today, function() {
       Project.find({},function(err, res){
         if (err) throw err;
-        console.log("Total Alpha Download in database is updated:\n", res);
+        console.log("Total Alpha Download in database is updated.");
       });
     });
   });
@@ -255,7 +271,7 @@ var jobLineChartProjectLogin = function() {
       console.log("Nothing in database now.");
     }
     else {
-      console.log("Query:", res[0]["date"]);
+      console.log("The earliest document on::", res[0]["date"]);
     }
     console.log("Database Query completes.");
   });
@@ -284,12 +300,9 @@ var jobLineChartProjectLogin = function() {
         if (results_database[i]["date"] != null) {
           date_pre = results_database[i]["date"];
           //Example: data_current[1] = ["2015-07-17", 2000];
-          data_current[j] = [];
-          data_current[j][0] = date_pre;
-          if (results_database[i]["total_Project_Login"] == null) {
-            data_current[j][1] = 0;
-          }
-          else {
+          if (results_database[i]["total_Project_Login"] != null) {
+            data_current[j] = [];
+            data_current[j][0] = date_pre;
             data_current[j][1] = parseInt(results_database[i]["total_Project_Login"]);
           }
           j++;
@@ -307,33 +320,124 @@ var jobLineChartProjectLogin = function() {
     updateDatabase("total_Project_Login", login_counts, today, function() {
       Project.find({}, function(err, res){
         if (err) throw err;
-        //console.log("database result:", res);
+        console.log("Total Projects Login counts in database is updated.");
       });
     });
+  });
+};
+
+var jobBarChartWeeklyAlphaDownload = function() {
+  var today = getDateToday();
+  console.log("Today is", today);
+
+  queryDatabase(function(err, res){
+    results_database = [];
+    results_database = res;
+
+    if (results_database.length == 0) {
+      console.log("Nothing in database now.");
+    }
+    else {
+      console.log("The earliest document on:", res[0]["date"]);
+    }
+    console.log("Database Query completes.");
+  });
+
+  param_cc = param.viewFilterParams_CEM_Nautilus_Alpha1_Download_x64;
+  console.log('Start Total Alpha1 Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD Nautilus Alpha 1 - 64bit  (1 of 2)'] == 2) {
+        download_counts++;
+      }
+    }
+    console.log("Nautilus Alpha1 64bit Downloads:", download_counts);
+
+    var data_current = [];
+    var data_pre = null;
+    var data_weekly = [];
+
+    var Dates = new Date(today).getWeek();
+    console.log("Today is in the week:", Dates[0].toLocaleDateString() + ' to '+ Dates[1].toLocaleDateString());
+    console.log("The start date of this week:", getFormattedDate(Dates[0]));
+
+    var filterResult = results_database.filter(function(item, index, array) {
+      return (item["date"] == getFormattedDate(Dates[0]));
+    });
+    console.log("Filter Result:", filterResult[0]["total_download_Alpha1"]);
+
+    var weekly_num = [];
+    var weekly_date = [];
+    // Store data this week: sub btween current date and the start date
+    weekly_num.push(parseInt(download_counts) - parseInt(filterResult[0]["total_download_Alpha1"]));
+    weekly_date.push(getFormattedDate(Dates[0]));
+
+    var filterResult1, filterResult2;
+    var currentDate = today;
+    do {
+      var LastDates = new Date(currentDate).getWeek(-7);
+      console.log("The previous week:", LastDates[0].toLocaleDateString() + ' to '+ LastDates[1].toLocaleDateString());
+
+      filterResult1 = results_database.filter(function(item, index, array) {
+        return (item["date"] == getFormattedDate(LastDates[0]));
+      });
+      console.log("Filter Result1:", filterResult1, filterResult1.length);
+
+      filterResult2 = results_database.filter(function(item, index, array) {
+        return (item["date"] == getFormattedDate(LastDates[1]));
+      });
+
+      if (filterResult1.length != 0 && filterResult2.length != 0) {
+        weekly_num.push(parseInt(filterResult2[0]["total_download_Alpha1"]) - parseInt(filterResult1[0]["total_download_Alpha1"]));
+        weekly_date.push(getFormattedDate(LastDates[0]));
+      }
+
+      currentDate = getFormattedDate(LastDates[1]); // Set current date to the ending date of last week
+    } while (filterResult1.length != 0);
+
+    data_current[0] = weekly_date;
+    data_current[1] = weekly_num;
+    geckoboard.geckoPush(data_current, data_pre, "Weekly Alpha1 Download");
+    console.log('Complete Weekly Alpha1 Download Push.');
   });
 };
 
 var runRightNow = function() {
   // Add the code to run right now
   jobNumberForumPost();
+  //jobBarChartWeeklyAlphaDownload();
+
+  setTimeout(function () {
+    jobNumberForumPost();
+  },
+  20000 // milliseconds
+  );
 
   setTimeout(function () {
     jobNumberAlphaDownload();
   },
-  10000 // milliseconds
+  40000 // milliseconds
   );
 
   setTimeout(function () {
     jobLineChartProjectLogin();
   },
-  20000 // milliseconds
+  60000 // milliseconds
   );
 
+  setTimeout(function () {
+    jobBarChartWeeklyAlphaDownload();
+  },
+  80000 // milliseconds
+  );
 };
 
 runRightNow();
 
 // Job schedule
+/*
 var job_Daily_Schedule = new CronJob('00 00 12 * * 0-6', function(){
   // Run everyday at 12:00:00 AM
   runRightNow();
@@ -341,6 +445,7 @@ var job_Daily_Schedule = new CronJob('00 00 12 * * 0-6', function(){
 null,
 true, // Start the job right now
 "America/Los_Angeles");
+*/
 
 // Run in series
 /*

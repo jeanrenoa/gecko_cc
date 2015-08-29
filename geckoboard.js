@@ -10,15 +10,23 @@ function Geckoboard() {
   var geckoboard_widget_push_url_User_Feedback = 'https://push.geckoboard.com/v1/send/155162-1f320517-d4d1-40a1-a333-454b8b2366f2';
   var geckoboard_widget_push_url_Alpha1_x64_Download = 'https://push.geckoboard.com/v1/send/156024-7420556f-4d00-467a-89db-53457a9e1e54';
   var geckoboard_widget_push_url_Total_Project_Login = 'https://push.geckoboard.com/v1/send/156024-d354787b-f44f-4558-9870-f8afc881576a';
+  var geckoboard_widget_push_url_Weekly_Alpha1_Download = 'https://push.geckoboard.com/v1/send/156024-59bf050f-1cf4-4c19-a7c2-060158d5fb30';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
 
     switch (widget) {
       case "Total Forum Posts":
-        res = payload_format.gecko_number;
-        res.item[0].value = val_current;
-        res.item[1].value = val_pre;
+        if (val_pre != 0) {
+          res = payload_format.gecko_number;
+          res.item[0].value = val_current;
+          res.item[1].value = val_pre;
+        }
+        else {
+          res = payload_format.gecko_number1;
+          res.item[0].value = val_current;
+          res.item[0].text = "No data from last day";
+        }
         break;
       case "User Distribution":
         res = payload_format.gecko_map;
@@ -27,15 +35,27 @@ function Geckoboard() {
         res = payload_format.gecko_linechart;
         break;
       case "Alpha1 64bit Download":
-        res = payload_format.gecko_number;
-        res.item[0].value = val_current;
-        res.item[1].value = val_pre;
+        if (val_pre != 0) {
+          res = payload_format.gecko_number;
+          res.item[0].value = val_current;
+          res.item[1].value = val_pre;
+        }
+        else {
+          res = payload_format.gecko_number1;
+          res.item[0].value = val_current;
+          res.item[0].text = "No data from last day";
+        }
         break;
       case "Total Project Login":
         res = payload_format.gecko_linechart;
         res.series[0].name = "Nautilus Alpha1";
         res.series[0].data = [];
         res.series[0].data = val_current;
+        break;
+      case "Weekly Alpha1 Download":
+        res = payload_format.gecko_bar;
+        res.x_axis.labels = val_current[0].reverse();
+        res.series[0].data =val_current[1].reverse();
         break;
       default:
         res = null;
@@ -67,6 +87,9 @@ function Geckoboard() {
         break;
       case "Total Project Login":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Total_Project_Login;
+        break;
+      case "Weekly Alpha1 Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Weekly_Alpha1_Download;
         break;
       default:
         geckoboard_widget_push_url = '';
