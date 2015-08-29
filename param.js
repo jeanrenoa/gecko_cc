@@ -1,6 +1,7 @@
 var filter_Myself = 'AE9B7BAB-E1B3-4067-91A6-5B0B2BDF507F';
 var filter_Chinese_Users = '2E7891CC-702C-48F4-80E2-09C5ED3AE21E';
 var filter_ACAD_Participants = '87898092-34E1-449E-B6B0-7AE3DF450B6A';
+var filter_No_Filter = null;
 
 exports.viewFilterParams_test = {
   Access_Key: '505561556323453EA00E8B91BF930AEB',
@@ -43,6 +44,30 @@ exports.viewFilterParams_CEM_Nautilus_Alpha1_Download_x64 = {
   ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
   Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
   ViewID: 'B117F019-FE12-42BB-9435-1F465C9919DB',
+  CoreFilterID: filter_ACAD_Participants,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
+exports.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x64 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: 'CE2D459F-6AAF-4CFD-A37D-36201CBEC2E1',
+  CoreFilterID: filter_ACAD_Participants,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
+exports.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x86 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '7EF3591B-76E2-4D8B-A79A-A333166B5D3D',
   CoreFilterID: filter_ACAD_Participants,
   UserFilterID: '',
   Page_Number: -1,

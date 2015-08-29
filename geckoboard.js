@@ -11,6 +11,8 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Alpha1_x64_Download = 'https://push.geckoboard.com/v1/send/156024-7420556f-4d00-467a-89db-53457a9e1e54';
   var geckoboard_widget_push_url_Total_Project_Login = 'https://push.geckoboard.com/v1/send/156024-d354787b-f44f-4558-9870-f8afc881576a';
   var geckoboard_widget_push_url_Weekly_Alpha1_Download = 'https://push.geckoboard.com/v1/send/156024-59bf050f-1cf4-4c19-a7c2-060158d5fb30';
+  var geckoboard_widget_push_url_Maestro_SP1_Beta1_x64_Download = 'https://push.geckoboard.com/v1/send/156024-c1fb98e5-515d-4a63-b19f-2981d9231ca5';
+  var geckoboard_widget_push_url_Maestro_SP1_Beta1_x86_Download = 'https://push.geckoboard.com/v1/send/156024-e7ffb7fe-7ba6-4ac0-bd38-cc0981b16f5c';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -35,6 +37,8 @@ function Geckoboard() {
         res = payload_format.gecko_linechart;
         break;
       case "Alpha1 64bit Download":
+      case "Maestro SP1 Beta1 64bit Download":
+      case "Maestro SP1 Beta1 32bit Download":
         if (val_pre != 0) {
           res = payload_format.gecko_number;
           res.item[0].value = val_current;
@@ -90,6 +94,12 @@ function Geckoboard() {
         break;
       case "Weekly Alpha1 Download":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Weekly_Alpha1_Download;
+        break;
+      case "Maestro SP1 Beta1 64bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Maestro_SP1_Beta1_x64_Download;
+        break;
+      case "Maestro SP1 Beta1 32bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Maestro_SP1_Beta1_x86_Download;
         break;
       default:
         geckoboard_widget_push_url = '';

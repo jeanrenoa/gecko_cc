@@ -25,6 +25,8 @@ var projectSchema = new Schema({
   total_Forum_Posts: Number,
   total_download_Alpha1: Number,
   total_Project_Login: Number,
+  total_download_Maestro_SP1_Beta1_x64: Number,
+  total_download_Maestro_SP1_Beta1_x86: Number,
   date: String,
   baseline: Boolean,
   Week: Number
@@ -62,6 +64,12 @@ updateDatabase = function(key, data, date, callback) {
         case "total_download_Alpha1":
           proj_database.total_download_Alpha1 = data;
           break;
+        case "total_download_Maestro_SP1_Beta1_x64":
+          proj_database.total_download_Maestro_SP1_Beta1_x64 = data;
+          break;
+        case "total_download_Maestro_SP1_Beta1_x86":
+          proj_database.total_download_Maestro_SP1_Beta1_x86 = data;
+          break;
         default:
 
       }
@@ -82,6 +90,12 @@ updateDatabase = function(key, data, date, callback) {
           break;
         case "total_download_Alpha1":
           res.total_download_Alpha1 = data;
+          break;
+        case "total_download_Maestro_SP1_Beta1_x64":
+          res.total_download_Maestro_SP1_Beta1_x64 = data;
+          break;
+        case "total_download_Maestro_SP1_Beta1_x86":
+          res.total_download_Maestro_SP1_Beta1_x86 = data;
           break;
         default:
       }
@@ -220,7 +234,7 @@ var jobNumberAlphaDownload = function() {
       console.log("Nothing in database now.");
     }
     else {
-      console.log("The earliest document on::", res[0]["date"]);
+      console.log("The earliest document on:", res[0]["date"]);
     }
     console.log("Database Query completes.");
   });
@@ -260,6 +274,110 @@ var jobNumberAlphaDownload = function() {
   });
 };
 
+var jobNumberMaestroSP1Beta1x64Download = function() {
+  var today = getDateToday();
+  console.log("Today is", today);
+
+  queryDatabase(function(err, res){
+    results_database = [];
+    results_database = res;
+
+    if (results_database.length == 0) {
+      console.log("Nothing in database now.");
+    }
+    else {
+      console.log("The earliest document on:", res[0]["date"]);
+    }
+    console.log("Database Query completes.");
+  });
+
+  param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x64;
+  console.log('Start Total Maestro SP1 Beta1 64bit Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD 2016 SP1 Beta 1 - 64bit'] == 2) {
+        download_counts++;
+      }
+    }
+    console.log("Download Numbers:", download_counts);
+
+    var data_current = download_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_download_Maestro_SP1_Beta1_x64"] != undefined) {
+        data_pre = results_database[i]["total_download_Maestro_SP1_Beta1_x64"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Maestro SP1 Beta1 64bit Download");
+    console.log('Complete Maestro SP1 Beta1 64bit Download Push.');
+
+    updateDatabase("total_download_Maestro_SP1_Beta1_x64", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        console.log("Total Maestro SP1 Beta1 64bit Download in database is updated.");
+      });
+    });
+  });
+};
+
+var jobNumberMaestroSP1Beta1x86Download = function() {
+  var today = getDateToday();
+  console.log("Today is", today);
+
+  queryDatabase(function(err, res){
+    results_database = [];
+    results_database = res;
+
+    if (results_database.length == 0) {
+      console.log("Nothing in database now.");
+    }
+    else {
+      console.log("The earliest document on:", res[0]["date"]);
+    }
+    console.log("Database Query completes.");
+  });
+
+  param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x64;
+  console.log('Start Total Maestro SP1 Beta1 32bit Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD 2016 SP1 Beta 1 - 32bit'] == 2) {
+        download_counts++;
+      }
+    }
+    console.log("Download Numbers:", download_counts);
+
+    var data_current = download_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_download_Maestro_SP1_Beta1_x86"] != undefined) {
+        data_pre = results_database[i]["total_download_Maestro_SP1_Beta1_x86"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Maestro SP1 Beta1 32bit Download");
+    console.log('Complete Maestro SP1 Beta1 Download Push.');
+
+    updateDatabase("total_download_Maestro_SP1_Beta1_x86", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        console.log("Total Maestro SP1 Beta1 32bit Download in database is updated.");
+      });
+    });
+  });
+};
+
 var jobLineChartProjectLogin = function() {
   var today = getDateToday();
 
@@ -271,7 +389,7 @@ var jobLineChartProjectLogin = function() {
       console.log("Nothing in database now.");
     }
     else {
-      console.log("The earliest document on::", res[0]["date"]);
+      console.log("The earliest document on:", res[0]["date"]);
     }
     console.log("Database Query completes.");
   });
@@ -366,13 +484,15 @@ var jobBarChartWeeklyAlphaDownload = function() {
     var filterResult = results_database.filter(function(item, index, array) {
       return (item["date"] == getFormattedDate(Dates[0]));
     });
-    console.log("Filter Result:", filterResult[0]["total_download_Alpha1"]);
+    //console.log("Filter Result:", filterResult[0]["total_download_Alpha1"]);
 
     var weekly_num = [];
     var weekly_date = [];
     // Store data this week: sub btween current date and the start date
-    weekly_num.push(parseInt(download_counts) - parseInt(filterResult[0]["total_download_Alpha1"]));
-    weekly_date.push(getFormattedDate(Dates[0]));
+    if (filterResult.length != 0) {
+      weekly_num.push(parseInt(download_counts) - parseInt(filterResult[0]["total_download_Alpha1"]));
+      weekly_date.push(getFormattedDate(Dates[0]));
+    }
 
     var filterResult1, filterResult2;
     var currentDate = today;
@@ -406,8 +526,10 @@ var jobBarChartWeeklyAlphaDownload = function() {
 
 var runRightNow = function() {
   // Add the code to run right now
-  jobNumberForumPost();
+  //jobNumberForumPost();
   //jobBarChartWeeklyAlphaDownload();
+  //jobNumberMaestroSP1Beta1x64Download();
+  //jobNumberMaestroSP1Beta1x86Download();
 
   setTimeout(function () {
     jobNumberForumPost();
@@ -432,12 +554,25 @@ var runRightNow = function() {
   },
   80000 // milliseconds
   );
+
+  setTimeout(function () {
+    jobNumberMaestroSP1Beta1x64Download();
+  },
+  100000 // milliseconds
+  );
+
+  setTimeout(function () {
+    jobNumberMaestroSP1Beta1x86Download();
+  },
+  120000 // milliseconds
+  );
+
 };
 
 runRightNow();
 
 // Job schedule
-/*
+
 var job_Daily_Schedule = new CronJob('00 00 12 * * 0-6', function(){
   // Run everyday at 12:00:00 AM
   runRightNow();
@@ -445,7 +580,7 @@ var job_Daily_Schedule = new CronJob('00 00 12 * * 0-6', function(){
 null,
 true, // Start the job right now
 "America/Los_Angeles");
-*/
+
 
 // Run in series
 /*
