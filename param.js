@@ -75,12 +75,24 @@ exports.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x86 = {
   CountOnly: false
 };
 
+exports.viewFilterParams_CEM_Maestro_SP1_Beta1_Forum_Posts = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: 'D9E4A48F-E2AA-4572-8818-9C5028D9EAC2',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
 exports.viewFilterParams_CEM_Project_Login = {
   Access_Key: '577FDF3477344436B16441B56B6EEA6E',
   ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
   Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
   ViewID: '58AFC2DE-992E-45AB-A089-9C9E5EE48DF9',
-  CoreFilterID: filter_Chinese_Users,
+  CoreFilterID: filter_No_Filter,
   UserFilterID: '',
   Page_Number: -1,
   ShowZeroValues: true,

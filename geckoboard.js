@@ -13,6 +13,7 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Weekly_Alpha1_Download = 'https://push.geckoboard.com/v1/send/156024-59bf050f-1cf4-4c19-a7c2-060158d5fb30';
   var geckoboard_widget_push_url_Maestro_SP1_Beta1_x64_Download = 'https://push.geckoboard.com/v1/send/156024-c1fb98e5-515d-4a63-b19f-2981d9231ca5';
   var geckoboard_widget_push_url_Maestro_SP1_Beta1_x86_Download = 'https://push.geckoboard.com/v1/send/156024-e7ffb7fe-7ba6-4ac0-bd38-cc0981b16f5c';
+  var geckoboard_widget_push_url_Total_Forum_Posts_Maestro_SP1_Beta1 = 'https://push.geckoboard.com/v1/send/156024-42da09e5-559d-43ae-8511-691e9f674cdb';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -39,6 +40,7 @@ function Geckoboard() {
       case "Alpha1 64bit Download":
       case "Maestro SP1 Beta1 64bit Download":
       case "Maestro SP1 Beta1 32bit Download":
+      case "Maestro SP1 Beta1 Forum Posts":
         if (val_pre != 0) {
           res = payload_format.gecko_number;
           res.item[0].value = val_current;
@@ -100,6 +102,9 @@ function Geckoboard() {
         break;
       case "Maestro SP1 Beta1 32bit Download":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Maestro_SP1_Beta1_x86_Download;
+        break;
+      case "Maestro SP1 Beta1 Forum Posts":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Total_Forum_Posts_Maestro_SP1_Beta1;
         break;
       default:
         geckoboard_widget_push_url = '';

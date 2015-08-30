@@ -27,14 +27,14 @@ var projectSchema = new Schema({
   total_Project_Login: Number,
   total_download_Maestro_SP1_Beta1_x64: Number,
   total_download_Maestro_SP1_Beta1_x86: Number,
+  total_Forum_Posts_Maestro_SP1_Beta1: Number,
   date: String,
   baseline: Boolean,
   Week: Number
 });
 
 var Project = mongodb.mongoose.model('Project', projectSchema);
-
-var results_database;  // Store the result queried from database
+var results_database;
 
 updateDatabase = function(key, data, date, callback) {
 
@@ -70,6 +70,9 @@ updateDatabase = function(key, data, date, callback) {
         case "total_download_Maestro_SP1_Beta1_x86":
           proj_database.total_download_Maestro_SP1_Beta1_x86 = data;
           break;
+        case "total_Forum_Posts_Maestro_SP1_Beta1":
+          proj_database.total_Forum_Posts_Maestro_SP1_Beta1 = data;
+          break;
         default:
 
       }
@@ -97,6 +100,9 @@ updateDatabase = function(key, data, date, callback) {
         case "total_download_Maestro_SP1_Beta1_x86":
           res.total_download_Maestro_SP1_Beta1_x86 = data;
           break;
+        case "total_Forum_Posts_Maestro_SP1_Beta1":
+          res.total_Forum_Posts_Maestro_SP1_Beta1 = data;
+          break;
         default:
       }
       res.save(function(err) {
@@ -109,11 +115,19 @@ updateDatabase = function(key, data, date, callback) {
   callback();
 };
 
-queryDatabase = function(callback) {
+var queryDatabase = function() {
+  results_database = [];
   Project.find({}, function(err, res){
     if (err) throw err;
-    //console.log("Database results:", res, typeof res);
-    callback(err, res);
+
+    results_database = res;
+    if (results_database.length == 0) {
+      console.log("Nothing in database now.");
+    }
+    else {
+      console.log("The earliest document on:", res[0]["date"]);
+    }
+    console.log("Database Query completes.");
   });
 };
 
@@ -178,20 +192,8 @@ Date.prototype.getWeek = function(start) {
 
 var jobNumberForumPost = function() {
   var today = getDateToday();
-  console.log("Today is", today);
 
-  queryDatabase(function(err, res){
-    results_database = [];
-    results_database = res;
-
-    if (results_database.length == 0) {
-      console.log("Nothing in database now.");
-    }
-    else {
-      console.log("The earliest document on:", res[0]["date"]);
-    }
-    console.log("Database Query completes.");
-  });
+  queryDatabase();  // Store the result queried from database into results_database
 
   param_cc = param.viewFilterParams_CEM_Total_User_Form_Posts;
   console.log('Start Total Forum Posts Query.');
@@ -201,7 +203,6 @@ var jobNumberForumPost = function() {
     console.log("Download Numbers:", data_current);
 
     var data_pre = 0;
-
     var lastday = getLastDate(1);
     for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
       if (results_database[i]["date"] == lastday) {
@@ -224,20 +225,8 @@ var jobNumberForumPost = function() {
 
 var jobNumberAlphaDownload = function() {
   var today = getDateToday();
-  console.log("Today is", today);
 
-  queryDatabase(function(err, res){
-    results_database = [];
-    results_database = res;
-
-    if (results_database.length == 0) {
-      console.log("Nothing in database now.");
-    }
-    else {
-      console.log("The earliest document on:", res[0]["date"]);
-    }
-    console.log("Database Query completes.");
-  });
+  queryDatabase();  // Store the result queried from database into results_database
 
   param_cc = param.viewFilterParams_CEM_Nautilus_Alpha1_Download_x64;
   console.log('Start Total Alpha1 Downloads Query.');
@@ -276,20 +265,8 @@ var jobNumberAlphaDownload = function() {
 
 var jobNumberMaestroSP1Beta1x64Download = function() {
   var today = getDateToday();
-  console.log("Today is", today);
 
-  queryDatabase(function(err, res){
-    results_database = [];
-    results_database = res;
-
-    if (results_database.length == 0) {
-      console.log("Nothing in database now.");
-    }
-    else {
-      console.log("The earliest document on:", res[0]["date"]);
-    }
-    console.log("Database Query completes.");
-  });
+  queryDatabase();  // Store the result queried from database into results_database
 
   param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x64;
   console.log('Start Total Maestro SP1 Beta1 64bit Downloads Query.');
@@ -328,20 +305,8 @@ var jobNumberMaestroSP1Beta1x64Download = function() {
 
 var jobNumberMaestroSP1Beta1x86Download = function() {
   var today = getDateToday();
-  console.log("Today is", today);
 
-  queryDatabase(function(err, res){
-    results_database = [];
-    results_database = res;
-
-    if (results_database.length == 0) {
-      console.log("Nothing in database now.");
-    }
-    else {
-      console.log("The earliest document on:", res[0]["date"]);
-    }
-    console.log("Database Query completes.");
-  });
+  queryDatabase();  // Store the result queried from database into results_database
 
   param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x86;
   console.log('Start Total Maestro SP1 Beta1 32bit Downloads Query.');
@@ -378,21 +343,51 @@ var jobNumberMaestroSP1Beta1x86Download = function() {
   });
 };
 
+var jobNumberMaestroSP1Beta1ForumPosts = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta1_Forum_Posts;
+  console.log('Start Total Maestro SP1 Beta1 Forum Posts Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var posts_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].Posts != undefined) {
+        posts_counts = posts_counts + parseInt(data[i].Posts);
+      }
+    }
+
+    console.log("Forum Posts Numbers:", posts_counts);
+
+    var data_current = posts_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_Forum_Posts_Maestro_SP1_Beta1"] != undefined) {
+        data_pre = results_database[i]["total_Forum_Posts_Maestro_SP1_Beta1"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Maestro SP1 Beta1 Forum Posts");
+    console.log('Complete Maestro SP1 Beta1 Forum Posts Push.');
+
+    updateDatabase("total_Forum_Posts_Maestro_SP1_Beta1", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        console.log("Total Maestro SP1 Beta1 Fourm Posts in database is updated.");
+      });
+    });
+  });
+};
+
 var jobLineChartProjectLogin = function() {
   var today = getDateToday();
 
-  queryDatabase(function(err, res){
-    results_database = [];
-    results_database = res;
-
-    if (results_database.length == 0) {
-      console.log("Nothing in database now.");
-    }
-    else {
-      console.log("The earliest document on:", res[0]["date"]);
-    }
-    console.log("Database Query completes.");
-  });
+  queryDatabase();  // Store the result queried from database into results_database
 
   param_cc = param.viewFilterParams_CEM_Project_Login;
   console.log('Start CenterCode Total Project Login Query.');
@@ -414,7 +409,7 @@ var jobLineChartProjectLogin = function() {
       if (err) throw err;
 
       for (var i = 0, j = 1; i < count; i++) {
-        console.log("condition:", i, results_database[i]["date"]);
+        //console.log("condition:", i, results_database[i]["date"]);
         if (results_database[i]["date"] != null) {
           date_pre = results_database[i]["date"];
           //Example: data_current[1] = ["2015-07-17", 2000];
@@ -433,12 +428,12 @@ var jobLineChartProjectLogin = function() {
       geckoboard.geckoPush(data_current, data_pre, "Total Project Login");
     });
 
-    console.log('Complete Total Forum Posts Push.');
+    console.log('Complete Total Project Login Push.');
 
     updateDatabase("total_Project_Login", login_counts, today, function() {
       Project.find({}, function(err, res){
         if (err) throw err;
-        console.log("Total Projects Login counts in database is updated.");
+        console.log("Total Project Login counts in database is updated.");
       });
     });
   });
@@ -446,20 +441,8 @@ var jobLineChartProjectLogin = function() {
 
 var jobBarChartWeeklyAlphaDownload = function() {
   var today = getDateToday();
-  console.log("Today is", today);
 
-  queryDatabase(function(err, res){
-    results_database = [];
-    results_database = res;
-
-    if (results_database.length == 0) {
-      console.log("Nothing in database now.");
-    }
-    else {
-      console.log("The earliest document on:", res[0]["date"]);
-    }
-    console.log("Database Query completes.");
-  });
+  queryDatabase();  // Store the result queried from database into results_database
 
   param_cc = param.viewFilterParams_CEM_Nautilus_Alpha1_Download_x64;
   console.log('Start Total Alpha1 Downloads Query.');
@@ -503,7 +486,6 @@ var jobBarChartWeeklyAlphaDownload = function() {
       filterResult1 = results_database.filter(function(item, index, array) {
         return (item["date"] == getFormattedDate(LastDates[0]));
       });
-      console.log("Filter Result1:", filterResult1, filterResult1.length);
 
       filterResult2 = results_database.filter(function(item, index, array) {
         return (item["date"] == getFormattedDate(LastDates[1]));
@@ -526,58 +508,40 @@ var jobBarChartWeeklyAlphaDownload = function() {
   });
 };
 
+function runFunctionByTimeout(callback, timeout) {
+  setTimeout(function () {
+    callback();
+  },
+  timeout*1000 // milliseconds
+  );
+}
+
 var runRightNow = function() {
+  var today = getDateToday();
+  console.log("Today is:", today);
+
   // Add the code to run right now
-  //jobNumberForumPost();
-  //jobBarChartWeeklyAlphaDownload();
-  //jobNumberMaestroSP1Beta1x64Download();
-  jobNumberMaestroSP1Beta1x86Download();
+  //jobNumberMaestroSP1Beta1ForumPosts();
 
-/*
-  setTimeout(function () {
-    jobNumberForumPost();
-  },
-  20000 // milliseconds
-  );
 
-  setTimeout(function () {
-    jobNumberAlphaDownload();
-  },
-  40000 // milliseconds
-  );
+  runFunctionByTimeout(jobNumberForumPost, 0);
+  runFunctionByTimeout(jobNumberAlphaDownload, 30);
+  runFunctionByTimeout(jobLineChartProjectLogin, 60);
+  runFunctionByTimeout(jobBarChartWeeklyAlphaDownload, 90);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 120);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 150);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 180);
 
-  setTimeout(function () {
-    jobLineChartProjectLogin();
-  },
-  60000 // milliseconds
-  );
-
-  setTimeout(function () {
-    jobBarChartWeeklyAlphaDownload();
-  },
-  80000 // milliseconds
-  );
-
-  setTimeout(function () {
-    jobNumberMaestroSP1Beta1x64Download();
-  },
-  100000 // milliseconds
-  );
-
-  setTimeout(function () {
-    jobNumberMaestroSP1Beta1x86Download();
-  },
-  120000 // milliseconds
-  );
-*/
 };
 
 runRightNow();
 
 // Job schedule
 
-var job_Daily_Schedule = new CronJob('00 00 12 * * 0-6', function(){
-  // Run everyday at 12:00:00 AM
+var job_Daily_Schedule = new CronJob('00 00 */2 * * 0-6', function(){
+  // Run everyday at 12:00:00 AM: '00 00 12 * * 0-6'
+  // Run every two hours: '00 00 */2 * * 0-6'
+  console.log("Job Starts...");
   runRightNow();
 },
 null,
