@@ -147,10 +147,12 @@ var getDateToday = function() {
 };
 
 var getLastDate = function(n) {
-  var now = new Date();
-  var year = now.getFullYear();
-  var month = now.getMonth() + 1;
-  var date = now.getDate() - n;
+  var day = new Date();
+  day.setDate(day.getDate() - n);
+
+  var year = day.getFullYear();
+  var month = day.getMonth() + 1;
+  var date = day.getDate();
   if (month < 10) {
     month = "0" + month;
   }
@@ -410,7 +412,7 @@ var jobLineChartProjectLogin = function() {
 
       for (var i = 0, j = 1; i < count; i++) {
         //console.log("condition:", i, results_database[i]["date"]);
-        if (results_database[i]["date"] != null) {
+        if (results_database[i]["date"] != undefined) {
           date_pre = results_database[i]["date"];
           //Example: data_current[1] = ["2015-07-17", 2000];
           if (results_database[i]["total_Project_Login"] != null) {
@@ -512,7 +514,7 @@ function runFunctionByTimeout(callback, timeout) {
   setTimeout(function () {
     callback();
   },
-  timeout*1000 // milliseconds
+  timeout*60000 // milliseconds
   );
 }
 
@@ -521,16 +523,16 @@ var runRightNow = function() {
   console.log("Today is:", today);
 
   // Add the code to run right now
-  //jobNumberMaestroSP1Beta1ForumPosts();
+  //jobNumberForumPost();
 
 
   runFunctionByTimeout(jobNumberForumPost, 0);
-  runFunctionByTimeout(jobNumberAlphaDownload, 30);
-  runFunctionByTimeout(jobLineChartProjectLogin, 60);
-  runFunctionByTimeout(jobBarChartWeeklyAlphaDownload, 90);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 120);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 150);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 180);
+  runFunctionByTimeout(jobNumberAlphaDownload, 2);
+  runFunctionByTimeout(jobLineChartProjectLogin, 4);
+  runFunctionByTimeout(jobBarChartWeeklyAlphaDownload, 6);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 8);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 10);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 12);
 
 };
 
@@ -541,7 +543,7 @@ runRightNow();
 var job_Daily_Schedule = new CronJob('00 00 */2 * * 0-6', function(){
   // Run everyday at 12:00:00 AM: '00 00 12 * * 0-6'
   // Run every two hours: '00 00 */2 * * 0-6'
-  console.log("Job Starts...");
+  console.log("*** Job Starts ***", new Date());
   runRightNow();
 },
 null,

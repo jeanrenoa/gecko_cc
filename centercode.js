@@ -58,8 +58,10 @@ function CenterCode() {
       client.ProjectViewFilter(viewFilterParams, function(err, result, xmlData) {
         console.log("result:", result);
         var data = [];
-        data = processResult(result);
-        callback(data);
+        if (result.ProjectViewFilterResult.Headers != undefined) {
+          data = processResult(result);
+          callback(data);
+        }
       });
     });
   }
