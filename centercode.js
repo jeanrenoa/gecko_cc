@@ -5,6 +5,9 @@ function CenterCode() {
   should = require('should');
   soap = require('soap');
 
+  var logger = require('./logger');
+  logger.debugLevel = 'debug';
+
   getFieldNames = function(headers) {
     var reducer;
     headers = headers != null ? headers.Header : void 0;
@@ -23,7 +26,7 @@ function CenterCode() {
   processResult = function(result) {
     var data, fieldNames, i, len, name, ref, results, val, value;
     fieldNames = getFieldNames(result.ProjectViewFilterResult.Headers);
-    console.log("field names:", fieldNames);
+    logger.log('debug', 'field Names: ' + JSON.stringify(fieldNames));
     //console.log("-->", result.ProjectViewFilterResult.Values.Value.slice(1));
     ref = result.ProjectViewFilterResult.Values.Value.slice(1);
     results = [];
@@ -56,7 +59,10 @@ function CenterCode() {
     // This is a export funtion
     soap.createClient(url, function(err, client) {
       client.ProjectViewFilter(viewFilterParams, function(err, result, xmlData) {
-        console.log("result:", result);
+        if (logger.debugLevel == 'debug') {
+          console.log('Result:', result);
+        }
+        //logger.log('debug', 'result: ' + JSON.stringify(result));
         var data = [];
         if (result.ProjectViewFilterResult.Headers != undefined) {
           data = processResult(result);
