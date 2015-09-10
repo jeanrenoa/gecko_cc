@@ -31,6 +31,8 @@ var projectSchema = new Schema({
   total_download_Maestro_SP1_Beta1_x64: Number,
   total_download_Maestro_SP1_Beta1_x86: Number,
   total_Forum_Posts_Maestro_SP1_Beta1: Number,
+  total_download_Nautilus_Alpha2_x64: Number,
+  total_download_Nautilus_Alpha2_x86: Number,
   date: String,
   baseline: Boolean,
   Week: Number
@@ -76,6 +78,12 @@ updateDatabase = function(key, data, date, callback) {
         case "total_Forum_Posts_Maestro_SP1_Beta1":
           proj_database.total_Forum_Posts_Maestro_SP1_Beta1 = data;
           break;
+        case "total_download_Nautilus_Alpha2_x64":
+          proj_database.total_download_Nautilus_Alpha2_x64 = data;
+          break;
+        case "total_download_Nautilus_Alpha2_x86":
+          proj_database.total_download_Nautilus_Alpha2_x86 = data;
+          break;
         default:
 
       }
@@ -105,6 +113,12 @@ updateDatabase = function(key, data, date, callback) {
           break;
         case "total_Forum_Posts_Maestro_SP1_Beta1":
           res.total_Forum_Posts_Maestro_SP1_Beta1 = data;
+          break;
+        case "total_download_Nautilus_Alpha2_x64":
+          res.total_download_Nautilus_Alpha2_x64 = data;
+          break;
+        case "total_download_Nautilus_Alpha2_x86":
+          res.total_download_Nautilus_Alpha2_x86 = data;
           break;
         default:
       }
@@ -389,6 +403,86 @@ var jobNumberMaestroSP1Beta1ForumPosts = function() {
   });
 };
 
+var jobNumberNautilusAlpha2x64Download = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Nautilus_Alpha2_Download_x64;
+  logger.log('release', 'Start Total Nautilus Alpha2 64bit Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD Nautilus Alpha 2 - 64bit (1 of 2) '] == 2) {
+        download_counts++;
+      }
+    }
+    logger.log('release', 'Download Numbers: ' + download_counts);
+
+    var data_current = download_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_download_Nautilus_Alpha2_x64"] != undefined) {
+        data_pre = results_database[i]["total_download_Nautilus_Alpha2_x64"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Nautilus Alpha2 64bit Download");
+    logger.log('debug', 'Complete Nautilus 64bit Download Push.');
+
+    updateDatabase("total_download_Nautilus_Alpha2_x64", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        logger.log('debug', 'Nautilus Alpha2 64bit Download in database is updated.');
+      });
+    });
+  });
+};
+
+var jobNumberNautilusAlpha2x86Download = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Nautilus_Alpha2_Download_x86;
+  logger.log('release', 'Start Total Nautilus Alpha2 32bit Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD Nautilus Alpha 2 - 32bit '] == 2) {
+        download_counts++;
+      }
+    }
+    logger.log('release', 'Download Numbers: ' + download_counts);
+
+    var data_current = download_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_download_Maestro_SP1_Beta1_x86"] != undefined) {
+        data_pre = results_database[i]["total_download_Maestro_SP1_Beta1_x86"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Nautilus Alpha2 32bit Download");
+    logger.log('debug', 'Complete Nautilus Alpha2 32bit Download Push.');
+
+    updateDatabase("total_download_Nautilus_Alpha2_x86", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        logger.log('debug', 'Total Nautilus Alpha2 32bit Download in database is updated.');
+      });
+    });
+  });
+};
+
 var jobLineChartProjectLogin = function() {
   var today = getDateToday();
 
@@ -529,7 +623,7 @@ var runRightNow = function() {
   logger.log('release', '*** Job Starts *** ' + new Date());
 
   // Add the code to run right now
-  //jobBarChartWeeklyAlphaDownload();
+  // jobNumberNautilusAlpha2x64Download();
 
 
   runFunctionByTimeout(jobNumberForumPost, 0);
@@ -539,6 +633,8 @@ var runRightNow = function() {
   runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 8);
   runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 10);
   runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 12);
+  runFunctionByTimeout(jobNumberNautilusAlpha2x64Download, 14);
+  runFunctionByTimeout(jobNumberNautilusAlpha2x86Download, 16);
 
 };
 

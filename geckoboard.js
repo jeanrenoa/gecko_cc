@@ -3,7 +3,7 @@ function Geckoboard() {
   var payload_format = require('./payload.js');
 
   var logger = require('./logger');
-  logger.debugLevel = 'debug';
+  logger.debugLevel = 'release';
 
   //var geckoboard_widget_push_url = 'https://push.geckoboard.com/v1/send/152051-6d174582-9333-469d-b853-f0054067e524';
   var geckoboard_api_key = '320d6619216242dbebf256d24b24e6e2';
@@ -17,6 +17,8 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Maestro_SP1_Beta1_x64_Download = 'https://push.geckoboard.com/v1/send/156024-c1fb98e5-515d-4a63-b19f-2981d9231ca5';
   var geckoboard_widget_push_url_Maestro_SP1_Beta1_x86_Download = 'https://push.geckoboard.com/v1/send/156024-e7ffb7fe-7ba6-4ac0-bd38-cc0981b16f5c';
   var geckoboard_widget_push_url_Total_Forum_Posts_Maestro_SP1_Beta1 = 'https://push.geckoboard.com/v1/send/156024-42da09e5-559d-43ae-8511-691e9f674cdb';
+  var geckoboard_widget_push_url_Nautilus_Alpha2_x64_Download = 'https://push.geckoboard.com/v1/send/156024-a59059ca-827f-4b47-a35f-09ac27973d37';
+  var geckoboard_widget_push_url_Nautilus_Alpha2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-03bf5390-3cee-4ad9-ab64-c22d478e3c04';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -43,6 +45,8 @@ function Geckoboard() {
       case "Alpha1 64bit Download":
       case "Maestro SP1 Beta1 64bit Download":
       case "Maestro SP1 Beta1 32bit Download":
+      case "Nautilus Alpha2 64bit Download":
+      case "Nautilus Alpha2 32bit Download":
       case "Maestro SP1 Beta1 Forum Posts":
         if (val_pre != 0) {
           res = payload_format.gecko_number;
@@ -108,6 +112,12 @@ function Geckoboard() {
         break;
       case "Maestro SP1 Beta1 Forum Posts":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Total_Forum_Posts_Maestro_SP1_Beta1;
+        break;
+      case "Nautilus Alpha2 64bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_Alpha2_x64_Download;
+        break;
+      case "Nautilus Alpha2 32bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_Alpha2_x86_Download;
         break;
       default:
         geckoboard_widget_push_url = '';
