@@ -9,7 +9,9 @@ var Geckoboard = require('./geckoboard');
 var geckoboard = new Geckoboard();
 
 var logger = require('./logger');
-logger.debugLevel = 'release';
+logger.debugLevel = 'debug';
+
+var whoami = "whoami";
 
 //var async = require('async');
 
@@ -570,15 +572,14 @@ var jobLineChartProjectLogin = function() {
       if (err) throw err;
 
       for (var i = 0, j = 1; i < count; i++) {
-        //console.log("condition:", i, results_database[i]["date"]);
-        if (results_database[i]["date"] != undefined) {
+        console.log("condition:", i, results_database[i]["date"], results_database[i]["total_Project_Login"]);
+        if (results_database[i]["date"] != undefined && results_database[i]["total_Project_Login"] != undefined) {
           date_pre = results_database[i]["date"];
           //Example: data_current[1] = ["2015-07-17", 2000];
-          if (results_database[i]["total_Project_Login"] != null) {
-            data_current[j] = [];
-            data_current[j][0] = date_pre;
-            data_current[j][1] = parseInt(results_database[i]["total_Project_Login"]);
-          }
+          data_current[j] = [];
+          data_current[j][0] = date_pre;
+          data_current[j][1] = parseInt(results_database[i]["total_Project_Login"]);
+
           j++;
         }
       }
@@ -686,9 +687,9 @@ var runRightNow = function() {
 
   // Add the code to run right now
   //jobHandler('Total Forum Posts');
-  //jobNumberMaestroSP1Beta2x64Download();
+  jobLineChartProjectLogin();
 
-
+/*
   runFunctionByTimeout(jobNumberForumPost, 0);
   runFunctionByTimeout(jobLineChartProjectLogin, 2);
   runFunctionByTimeout(jobNumberMaestroSP1Beta2x64Download, 4);
@@ -698,7 +699,7 @@ var runRightNow = function() {
   runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 12);
   runFunctionByTimeout(jobNumberNautilusAlpha2x64Download, 14);
   runFunctionByTimeout(jobNumberNautilusAlpha2x86Download, 16);
-
+*/
 };
 
 runRightNow();

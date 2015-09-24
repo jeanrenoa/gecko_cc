@@ -3,7 +3,7 @@ function Geckoboard() {
   var payload_format = require('./payload.js');
 
   var logger = require('./logger');
-  logger.debugLevel = 'release';
+  logger.debugLevel = 'debug';
 
   //var geckoboard_widget_push_url = 'https://push.geckoboard.com/v1/send/152051-6d174582-9333-469d-b853-f0054067e524';
   var geckoboard_api_key = '320d6619216242dbebf256d24b24e6e2';
