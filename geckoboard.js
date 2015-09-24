@@ -19,13 +19,15 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Total_Forum_Posts_Maestro_SP1_Beta1 = 'https://push.geckoboard.com/v1/send/156024-42da09e5-559d-43ae-8511-691e9f674cdb';
   var geckoboard_widget_push_url_Nautilus_Alpha2_x64_Download = 'https://push.geckoboard.com/v1/send/156024-a59059ca-827f-4b47-a35f-09ac27973d37';
   var geckoboard_widget_push_url_Nautilus_Alpha2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-03bf5390-3cee-4ad9-ab64-c22d478e3c04';
+  var geckoboard_widget_push_url_Maestro_SP1_Beta2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-93ca66e3-cf0f-46bd-a23e-b047b2a1e4e0';
+  var geckoboard_widget_push_url_Maestro_SP1_Beta2_x64_Download = 'https://push.geckoboard.com/v1/send/156024-d38a7f97-733a-4260-b26b-6fa9cef1663d';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
 
     switch (widget) {
       case "Total Forum Posts":
-        if (val_pre != 0) {
+        if (val_pre != 0 && val_pre != undefined) {
           res = payload_format.gecko_number;
           res.item[0].value = val_current;
           res.item[1].value = val_pre;
@@ -45,10 +47,12 @@ function Geckoboard() {
       case "Alpha1 64bit Download":
       case "Maestro SP1 Beta1 64bit Download":
       case "Maestro SP1 Beta1 32bit Download":
+      case "Maestro SP1 Beta2 64bit Download":
+      case "Maestro SP1 Beta2 32bit Download":
       case "Nautilus Alpha2 64bit Download":
       case "Nautilus Alpha2 32bit Download":
       case "Maestro SP1 Beta1 Forum Posts":
-        if (val_pre != 0) {
+        if (val_pre != 0 && val_pre != undefined) {
           res = payload_format.gecko_number;
           res.item[0].value = val_current;
           res.item[1].value = val_pre;
@@ -112,6 +116,12 @@ function Geckoboard() {
         break;
       case "Maestro SP1 Beta1 Forum Posts":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Total_Forum_Posts_Maestro_SP1_Beta1;
+        break;
+      case "Maestro SP1 Beta2 32bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Maestro_SP1_Beta2_x86_Download;
+        break;
+      case "Maestro SP1 Beta2 64bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Maestro_SP1_Beta2_x64_Download;
         break;
       case "Nautilus Alpha2 64bit Download":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_Alpha2_x64_Download;

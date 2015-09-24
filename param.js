@@ -75,6 +75,30 @@ exports.viewFilterParams_CEM_Maestro_SP1_Beta1_Download_x86 = {
   CountOnly: false
 };
 
+exports.viewFilterParams_CEM_Maestro_SP1_Beta2_Download_x64 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '95EEBB7F-A8D5-4CFF-ACEE-C2A4C57E343F',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
+exports.viewFilterParams_CEM_Maestro_SP1_Beta2_Download_x86 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '929498DF-EE3C-4078-BDDE-EA2550910DD0',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
 exports.viewFilterParams_CEM_Nautilus_Alpha2_Download_x64 = {
   Access_Key: '577FDF3477344436B16441B56B6EEA6E',
   ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',

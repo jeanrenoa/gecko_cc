@@ -9,7 +9,7 @@ var Geckoboard = require('./geckoboard');
 var geckoboard = new Geckoboard();
 
 var logger = require('./logger');
-logger.debugLevel = 'debug';
+logger.debugLevel = 'release';
 
 //var async = require('async');
 
@@ -30,6 +30,8 @@ var projectSchema = new Schema({
   total_Project_Login: Number,
   total_download_Maestro_SP1_Beta1_x64: Number,
   total_download_Maestro_SP1_Beta1_x86: Number,
+  total_download_Maestro_SP1_Beta2_x64: Number,
+  total_download_Maestro_SP1_Beta2_x86: Number,
   total_Forum_Posts_Maestro_SP1_Beta1: Number,
   total_download_Nautilus_Alpha2_x64: Number,
   total_download_Nautilus_Alpha2_x86: Number,
@@ -38,10 +40,17 @@ var projectSchema = new Schema({
   Week: Number
 });
 
-var Project = mongodb.mongoose.model('Project', projectSchema);
-var results_database;
+var field_CenterCode = {
+  "Total Forum Posts": "# of Total User Forum Posts",
+  "Alpha1 64bit Download": "AutoCAD Nautilus Alpha 1 - 64bit  (1 of 2)",
+  "Maestro SP1 Beta2 32bit Download": "AutoCAD 2016 SP1 Beta 2 - 32bit",
+  "Maestro SP1 Beta2 64bit Download": "AutoCAD 2016 SP1 Beta 2 - 64bit"
+};
 
-updateDatabase = function(key, data, date, callback) {
+var Project = mongodb.mongoose.model('Project', projectSchema);
+var results_database; // result from queryDatabase
+
+function updateDatabase (key, data, date, callback) {
 
   logger.log('info', 'Start to update database.')
 
@@ -59,34 +68,7 @@ updateDatabase = function(key, data, date, callback) {
       });
       proj_database.date = date;
 
-      switch (key) {
-        case "total_Project_Login":
-          proj_database.total_Project_Login = data;
-          break;
-        case "total_Forum_Posts":
-          proj_database.total_Forum_Posts = data;
-          break;
-        case "total_download_Alpha1":
-          proj_database.total_download_Alpha1 = data;
-          break;
-        case "total_download_Maestro_SP1_Beta1_x64":
-          proj_database.total_download_Maestro_SP1_Beta1_x64 = data;
-          break;
-        case "total_download_Maestro_SP1_Beta1_x86":
-          proj_database.total_download_Maestro_SP1_Beta1_x86 = data;
-          break;
-        case "total_Forum_Posts_Maestro_SP1_Beta1":
-          proj_database.total_Forum_Posts_Maestro_SP1_Beta1 = data;
-          break;
-        case "total_download_Nautilus_Alpha2_x64":
-          proj_database.total_download_Nautilus_Alpha2_x64 = data;
-          break;
-        case "total_download_Nautilus_Alpha2_x86":
-          proj_database.total_download_Nautilus_Alpha2_x86 = data;
-          break;
-        default:
-
-      }
+      proj_database[key] = data;
 
       proj_database.save(function(err){
         if (err) throw err;
@@ -95,33 +77,8 @@ updateDatabase = function(key, data, date, callback) {
     }
     else {
       // Find the data by condition, need to update database
-      switch (key) {
-        case "total_Project_Login":
-          res.total_Project_Login = data;
-          break;
-        case "total_Forum_Posts":
-          res.total_Forum_Posts = data;
-          break;
-        case "total_download_Alpha1":
-          res.total_download_Alpha1 = data;
-          break;
-        case "total_download_Maestro_SP1_Beta1_x64":
-          res.total_download_Maestro_SP1_Beta1_x64 = data;
-          break;
-        case "total_download_Maestro_SP1_Beta1_x86":
-          res.total_download_Maestro_SP1_Beta1_x86 = data;
-          break;
-        case "total_Forum_Posts_Maestro_SP1_Beta1":
-          res.total_Forum_Posts_Maestro_SP1_Beta1 = data;
-          break;
-        case "total_download_Nautilus_Alpha2_x64":
-          res.total_download_Nautilus_Alpha2_x64 = data;
-          break;
-        case "total_download_Nautilus_Alpha2_x86":
-          res.total_download_Nautilus_Alpha2_x86 = data;
-          break;
-        default:
-      }
+      res[key] = data;
+
       res.save(function(err) {
         if (err) throw err;
         logger.log('debug', 'Database updated accordingly.');
@@ -130,9 +87,9 @@ updateDatabase = function(key, data, date, callback) {
   });
 
   callback();
-};
+}
 
-var queryDatabase = function() {
+function queryDatabase () {
   results_database = [];
   Project.find({}, function(err, res){
     if (err) throw err;
@@ -146,9 +103,9 @@ var queryDatabase = function() {
     }
     logger.log('debug', 'Database Query completes.');
   });
-};
+}
 
-var getDateToday = function() {
+function getDateToday () {
   var now = new Date();
   var year = now.getFullYear();
   var month = now.getMonth() + 1;
@@ -161,9 +118,9 @@ var getDateToday = function() {
   }
   var today = year + "-" + month + "-" + date;
   return today;
-};
+}
 
-var getLastDate = function(n) {
+function getLastDate (n) {
   var day = new Date();
   day.setDate(day.getDate() - n);
 
@@ -178,9 +135,9 @@ var getLastDate = function(n) {
   }
   var Last_N_date = year + "-" + month + "-" + date;
   return Last_N_date;
-};
+}
 
-var getFormattedDate = function(date) {
+function getFormattedDate (date) {
   var year = date.getFullYear();
   var month = date.getMonth()+1;
   var date = date.getDate();
@@ -191,7 +148,7 @@ var getFormattedDate = function(date) {
     date = "0" + date;
   }
   return (year + "-" + month + "-" + date);
-};
+}
 
 Date.prototype.getWeek = function(start) {
     //Calcing the starting point
@@ -208,6 +165,111 @@ Date.prototype.getWeek = function(start) {
 //test code
 //var Dates = new Date("2015-8-31").getWeek();
 //console.log(Dates[0].toLocaleDateString() + ' to '+ Dates[1].toLocaleDateString());
+
+function getDataCurrent(key, data) {
+  var res;
+  switch (key) {
+    case 'Total Forum Posts':
+      res = data[1][field_CenterCode[key]];
+      break;
+    case 'Alpha1 64bit Download':
+    case 'Maestro SP1 Beta2 32bit Download':
+    case 'Maestro SP1 Beta2 64bit Download':
+      var download_counts = 0;
+      for (var i = 0; i < data.length; i++) {
+        if (data[i][field_CenterCode[key]] == 2) {
+          download_counts++;
+        }
+      }
+      res = download_counts;
+      break;
+    default:
+
+  }
+  return res;
+}
+
+function getDataLastDay(key_db) {
+  var lastday = getLastDate(1);
+  var res;
+  for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+    if (results_database[i]["date"] == lastday) {
+      res = results_database[i][key_db];
+      flag = 1;
+    }
+  }
+  return res;
+}
+
+function processDBData(key, chartType, key_db, data) {
+  var data_current;
+  var data_pre;
+
+  data_current = getDataCurrent(key, data);
+  data_pre = getDataLastDay(key_db);
+
+  logger.log('release', key + ': ' + data_current);
+
+  return {current:data_current, previous:data_pre};
+}
+
+function jobHandler(key, chartType) {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  var key_db;  // the corresponding property in DB to the key
+
+  switch (key) {
+    case 'Total Forum Posts':
+      param_cc = param.viewFilterParams_CEM_Total_User_Form_Posts;
+      key_db = 'total_Forum_Posts';
+      break;
+    case 'Alpha1 64bit Download':
+      param_cc = param.viewFilterParams_CEM_Nautilus_Alpha1_Download_x64;
+      key_db = 'total_download_Alpha1';
+      break;
+    case 'Maestro SP1 Beta2 32bit Download':
+      param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta2_Download_x86;
+      key_db = 'total_download_Maestro_SP1_Beta2_x86';
+      break;
+    case 'Maestro SP1 Beta2 64bit Download':
+      param_cc = param.viewFilterParams_CEM_Maestro_SP1_Beta2_Download_x64;
+      key_db = 'total_download_Maestro_SP1_Beta2_x64';
+      break;
+    default:
+      param_cc = '';
+  }
+  logger.log('release', 'Start ' + key + ' Query from Database.');
+
+  try {
+    centercode.getData(url_live_site, param_cc, function(data){
+      var result_DB = processDBData(key, chartType, key_db, data);
+      logger.log('debug', 'Current: ' + result_DB.current);
+      logger.log('debug', 'Previous: ' + result_DB.previous);
+
+      geckoboard.geckoPush(result_DB.current, result_DB.previous, key);
+      logger.log('debug', 'Complete ' + key + ' Push to Geckobaord.');
+
+      updateDatabase(key_db, result_DB.current, today, function() {
+        Project.find({},function(err, res){
+          if (err) throw err;
+          logger.log('debug', key + ' in database is updated.');
+        });
+      });
+    });
+  } catch (err) {
+    console.log("Error:", err);
+  }
+}
+
+function jobNumberMaestroSP1Beta2x86Download() {
+  jobHandler('Maestro SP1 Beta2 32bit Download');
+}
+
+function jobNumberMaestroSP1Beta2x64Download() {
+  jobHandler('Maestro SP1 Beta2 64bit Download');
+}
 
 var jobNumberForumPost = function() {
   var today = getDateToday();
@@ -466,7 +528,7 @@ var jobNumberNautilusAlpha2x86Download = function() {
     var lastday = getLastDate(1);
     for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
       if (results_database[i]["date"] == lastday && results_database[i]["total_download_Maestro_SP1_Beta1_x86"] != undefined) {
-        data_pre = results_database[i]["total_download_Maestro_SP1_Beta1_x86"];
+        data_pre = results_database[i]["total_download_Nautilus_Alpha2_x86"];
         flag = 1;
       }
     }
@@ -623,13 +685,14 @@ var runRightNow = function() {
   logger.log('release', '*** Job Starts *** ' + new Date());
 
   // Add the code to run right now
-  // jobNumberNautilusAlpha2x64Download();
+  //jobHandler('Total Forum Posts');
+  //jobNumberMaestroSP1Beta2x64Download();
 
 
   runFunctionByTimeout(jobNumberForumPost, 0);
-  runFunctionByTimeout(jobNumberAlphaDownload, 2);
-  runFunctionByTimeout(jobLineChartProjectLogin, 4);
-  runFunctionByTimeout(jobBarChartWeeklyAlphaDownload, 6);
+  runFunctionByTimeout(jobLineChartProjectLogin, 2);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta2x64Download, 4);
+  runFunctionByTimeout(jobNumberMaestroSP1Beta2x86Download, 6);
   runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 8);
   runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 10);
   runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 12);

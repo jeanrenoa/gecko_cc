@@ -68,6 +68,9 @@ function CenterCode() {
           data = processResult(result);
           callback(data);
         }
+        else {
+          throw err;
+        }
       });
     });
   }
