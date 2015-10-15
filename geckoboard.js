@@ -21,6 +21,7 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Nautilus_Alpha2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-03bf5390-3cee-4ad9-ab64-c22d478e3c04';
   var geckoboard_widget_push_url_Maestro_SP1_Beta2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-93ca66e3-cf0f-46bd-a23e-b047b2a1e4e0';
   var geckoboard_widget_push_url_Maestro_SP1_Beta2_x64_Download = 'https://push.geckoboard.com/v1/send/156024-d38a7f97-733a-4260-b26b-6fa9cef1663d';
+  var geckoboard_widget_push_url_Weekly_Project_Login = 'https://push.geckoboard.com/v1/send/156024-38ac4ee0-1385-47dc-a0da-6db48a5abe75';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -70,6 +71,7 @@ function Geckoboard() {
         res.series[0].data = val_current;
         break;
       case "Weekly Alpha1 Download":
+      case "Weekly Project Login":
         res = payload_format.gecko_bar;
         res.x_axis.labels = val_current[0].reverse();
         res.series[0].data =val_current[1].reverse();
@@ -128,6 +130,9 @@ function Geckoboard() {
         break;
       case "Nautilus Alpha2 32bit Download":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_Alpha2_x86_Download;
+        break;
+      case "Weekly Project Login":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Weekly_Project_Login;
         break;
       default:
         geckoboard_widget_push_url = '';

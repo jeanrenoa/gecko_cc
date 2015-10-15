@@ -160,8 +160,9 @@ Date.prototype.getWeek = function(start) {
     var date = today.getDate() - day;
 
     // Grabbing Start/End Dates
+    var today_backup = new Date(today);
     var StartDate = new Date(today.setDate(date));
-    var EndDate = new Date(today.setDate(date + 6));
+    var EndDate = new Date(today_backup.setDate(date + 6));
     return [StartDate, EndDate];
 }
 //test code
@@ -572,7 +573,7 @@ var jobLineChartProjectLogin = function() {
       if (err) throw err;
 
       for (var i = 0, j = 1; i < count; i++) {
-        console.log("condition:", i, results_database[i]["date"], results_database[i]["total_Project_Login"]);
+        //console.log("condition:", i, results_database[i]["date"], results_database[i]["total_Project_Login"]);
         if (results_database[i]["date"] != undefined && results_database[i]["total_Project_Login"] != undefined) {
           date_pre = results_database[i]["date"];
           //Example: data_current[1] = ["2015-07-17", 2000];
@@ -672,6 +673,79 @@ var jobBarChartWeeklyAlphaDownload = function() {
   });
 };
 
+var jobBarChartWeeklyProjectLogin = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Project_Login;
+  logger.log('release', 'Start Weekly Project Login Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var login_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['# of Project Logins'] != null) {
+        login_counts = login_counts + parseInt(data[i]['# of Project Logins']);
+      }
+    }
+    logger.log('release', 'Project Login: ' + login_counts);
+
+    var data_current = [];
+    var data_pre = null;
+    var data_weekly = [];
+
+    var Dates = new Date(today).getWeek();
+    logger.log('debug', 'Today is in the week: ' + Dates[0].toLocaleDateString() + ' to ' + Dates[1].toLocaleDateString());
+    logger.log('debug', 'The start date of this week: ' + getFormattedDate(Dates[0]));
+
+    var filterResult = results_database.filter(function(item, index, array) {
+      return (item["date"] == getFormattedDate(Dates[0]));
+    });
+    //console.log("Filter Result:", filterResult[0]["total_download_Alpha1"]);
+
+    var weekly_num = [];
+    var weekly_date = [];
+    // Store data this week: sub btween current date and the start date
+    if (filterResult.length != 0) {
+      weekly_num.push(parseInt(login_counts) - parseInt(filterResult[0]["total_Project_Login"]));
+      weekly_date.push(getFormattedDate(Dates[0]));
+    }
+
+    var filterResult1, filterResult2;
+    var currentDate = today;
+
+    do {
+      console.log('current date:', currentDate);
+      var LastDates = new Date(currentDate).getWeek(-7);
+      console.log('The previous week:', LastDates[0].toLocaleDateString() + ' to ' + LastDates[1].toLocaleDateString());
+
+      filterResult1 = results_database.filter(function(item, index, array) {
+        return (item["date"] == getFormattedDate(LastDates[0]));
+      });
+
+      filterResult2 = results_database.filter(function(item, index, array) {
+        return (item["date"] == getFormattedDate(LastDates[1]));
+      });
+
+      if (filterResult1.length != 0 && filterResult2.length != 0) {
+        weekly_num.push(parseInt(filterResult2[0]["total_Project_Login"]) - parseInt(filterResult1[0]["total_Project_Login"]));
+        console.log(filterResult2[0]["total_Project_Login"], filterResult1[0]["total_Project_Login"]);
+        weekly_date.push(getFormattedDate(LastDates[0]));
+      }
+
+      currentDate = getFormattedDate(LastDates[1]); // Set current date to the ending date of last week
+    } while (filterResult1.length != 0);
+
+    data_current[0] = weekly_date;
+    data_current[1] = weekly_num;
+    console.log("weekly:", weekly_date);
+    if (weekly_date.length != 0) {
+      geckoboard.geckoPush(data_current, data_pre, "Weekly Project Login");
+    }
+    logger.log('debug', 'Complete Weekly Project Login Push.');
+  });
+};
+
 function runFunctionByTimeout(callback, timeout) {
   setTimeout(function () {
     callback();
@@ -687,7 +761,8 @@ var runRightNow = function() {
 
   // Add the code to run right now
   //jobHandler('Total Forum Posts');
-  jobLineChartProjectLogin();
+  //jobNumberForumPost();
+  jobBarChartWeeklyProjectLogin();
 
 /*
   runFunctionByTimeout(jobNumberForumPost, 0);

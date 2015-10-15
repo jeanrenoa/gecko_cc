@@ -60,11 +60,12 @@ function CenterCode() {
     soap.createClient(url, function(err, client) {
       client.ProjectViewFilter(viewFilterParams, function(err, result, xmlData) {
         if (logger.debugLevel == 'debug') {
+          //console.log('Result:', result.ProjectViewFilterResult.Errors.Execute_Failure);
           console.log('Result:', result);
         }
         //logger.log('debug', 'result: ' + JSON.stringify(result));
         var data = [];
-        if (result.ProjectViewFilterResult.Headers != undefined) {
+        if (result.ProjectViewFilterResult.Headers != undefined && result.ProjectViewFilterResult != undefined) {
           data = processResult(result);
           callback(data);
         }
