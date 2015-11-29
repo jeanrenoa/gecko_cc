@@ -3,7 +3,7 @@ function Geckoboard() {
   var payload_format = require('./payload.js');
 
   var logger = require('./logger');
-  logger.debugLevel = 'debug';
+  logger.debugLevel = 'release';
 
   //var geckoboard_widget_push_url = 'https://push.geckoboard.com/v1/send/152051-6d174582-9333-469d-b853-f0054067e524';
   var geckoboard_api_key = '320d6619216242dbebf256d24b24e6e2';
@@ -22,6 +22,7 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Maestro_SP1_Beta2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-93ca66e3-cf0f-46bd-a23e-b047b2a1e4e0';
   var geckoboard_widget_push_url_Maestro_SP1_Beta2_x64_Download = 'https://push.geckoboard.com/v1/send/156024-d38a7f97-733a-4260-b26b-6fa9cef1663d';
   var geckoboard_widget_push_url_Weekly_Project_Login = 'https://push.geckoboard.com/v1/send/156024-38ac4ee0-1385-47dc-a0da-6db48a5abe75';
+  var geckoboard_widget_push_url_Total_Forum_Posts_By_Tester = 'https://push.geckoboard.com/v1/send/156024-1a15f4b4-7e3a-49e9-beb4-4d97c858ee3e';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -53,6 +54,7 @@ function Geckoboard() {
       case "Nautilus Alpha2 64bit Download":
       case "Nautilus Alpha2 32bit Download":
       case "Maestro SP1 Beta1 Forum Posts":
+      case "Forum Post By Internal Tester":
         if (val_pre != 0 && val_pre != undefined) {
           res = payload_format.gecko_number;
           res.item[0].value = val_current;
@@ -133,6 +135,9 @@ function Geckoboard() {
         break;
       case "Weekly Project Login":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Weekly_Project_Login;
+        break;
+      case "Forum Post By Internal Tester":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Total_Forum_Posts_By_Tester;
         break;
       default:
         geckoboard_widget_push_url = '';

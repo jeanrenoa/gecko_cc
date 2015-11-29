@@ -9,7 +9,7 @@ var Geckoboard = require('./geckoboard');
 var geckoboard = new Geckoboard();
 
 var logger = require('./logger');
-logger.debugLevel = 'debug';
+logger.debugLevel = 'release';
 
 var whoami = "whoami";
 
@@ -28,6 +28,7 @@ var Schema = mongodb.mongoose.Schema;
 var projectSchema = new Schema({
   project: String,
   total_Forum_Posts: Number,
+  total_Forum_Posts_By_Internal_Tester: Number,
   total_download_Alpha1: Number,
   total_Project_Login: Number,
   total_download_Maestro_SP1_Beta1_x64: Number,
@@ -548,6 +549,46 @@ var jobNumberNautilusAlpha2x86Download = function() {
   });
 };
 
+var jobNumberForumPostByInternalTester = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Forum_Posts_From_Internal_Testers;
+  logger.log('release', 'Start Total Internal Tester Forum Post Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var post_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['# of Forum Posts'] != undefined && data[i]['# of Forum Posts'] != 0) {
+        post_counts = post_counts + parseInt(data[i]['# of Forum Posts']);
+      }
+    }
+    logger.log('release', 'Forum Posts from Internal Testers: ' + post_counts);
+
+    var data_current = post_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_Forum_Posts_By_Internal_Tester"] != undefined) {
+        data_pre = results_database[i]["total_Forum_Posts_By_Internal_Tester"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Forum Post By Internal Tester");
+    logger.log('debug', 'Complete Forum Post By Tester Push.');
+
+    updateDatabase("total_Forum_Posts_By_Internal_Tester", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        logger.log('debug', 'Forum Post By Internal Tester in database is updated.');
+      });
+    });
+  });
+};
+
 var jobLineChartProjectLogin = function() {
   var today = getDateToday();
 
@@ -762,26 +803,28 @@ var runRightNow = function() {
   // Add the code to run right now
   //jobHandler('Total Forum Posts');
   //jobNumberForumPost();
-  jobBarChartWeeklyProjectLogin();
+  //jobNumberForumPostByInternalTester();
 
-/*
+
   runFunctionByTimeout(jobNumberForumPost, 0);
-  runFunctionByTimeout(jobLineChartProjectLogin, 2);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta2x64Download, 4);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta2x86Download, 6);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 8);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 10);
-  runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 12);
-  runFunctionByTimeout(jobNumberNautilusAlpha2x64Download, 14);
-  runFunctionByTimeout(jobNumberNautilusAlpha2x86Download, 16);
-*/
+  runFunctionByTimeout(jobLineChartProjectLogin, 5);
+  // runFunctionByTimeout(jobNumberMaestroSP1Beta2x64Download, 4);
+  // runFunctionByTimeout(jobNumberMaestroSP1Beta2x86Download, 6);
+  // runFunctionByTimeout(jobNumberMaestroSP1Beta1x64Download, 8);
+  // runFunctionByTimeout(jobNumberMaestroSP1Beta1x86Download, 10);
+  // runFunctionByTimeout(jobNumberMaestroSP1Beta1ForumPosts, 12);
+  runFunctionByTimeout(jobNumberNautilusAlpha2x64Download, 10);
+  runFunctionByTimeout(jobNumberNautilusAlpha2x86Download, 15);
+  runFunctionByTimeout(jobNumberForumPostByInternalTester, 20);
+  runFunctionByTimeout(jobBarChartWeeklyProjectLogin, 25);
+
 };
 
 runRightNow();
 
 // Job schedule
 
-var job_Daily_Schedule = new CronJob('00 00 */2 * * 0-6', function(){
+var job_Daily_Schedule = new CronJob('00 00 12 * * 0-6', function(){
   // Run everyday at 12:00:00 AM: '00 00 12 * * 0-6'
   // Run every two hours: '00 00 */2 * * 0-6'
   logger.log('release', '*** Job Starts *** ' + new Date());

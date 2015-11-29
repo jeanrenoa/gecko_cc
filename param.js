@@ -1,6 +1,8 @@
 var filter_Myself = 'AE9B7BAB-E1B3-4067-91A6-5B0B2BDF507F';
-var filter_Chinese_Users = '2E7891CC-702C-48F4-80E2-09C5ED3AE21E';
+var filter_Chinese_Users = '2F11C37B-86AC-4697-AD5C-1B5FD6A4A152';
 var filter_ACAD_Participants = '87898092-34E1-449E-B6B0-7AE3DF450B6A';
+var filter_Internal_Autodesk_Chinese_Testers = 'C36D1CA1-08F2-4469-B2AB-B42F05581799';
+var filter_Internal_Autodesk_Testers = 'F5ED2410-3EDE-420F-9767-67A1B0C5703E';
 var filter_No_Filter = null;
 
 exports.viewFilterParams_test = {
@@ -141,6 +143,18 @@ exports.viewFilterParams_CEM_Project_Login = {
   Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
   ViewID: '58AFC2DE-992E-45AB-A089-9C9E5EE48DF9',
   CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
+exports.viewFilterParams_CEM_Forum_Posts_From_Internal_Testers = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '5DAA112F-A607-47D8-BE2F-EDA2C46F4B61',
+  CoreFilterID: filter_Internal_Autodesk_Testers,
   UserFilterID: '',
   Page_Number: -1,
   ShowZeroValues: true,
