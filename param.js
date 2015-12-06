@@ -160,3 +160,27 @@ exports.viewFilterParams_CEM_Forum_Posts_From_Internal_Testers = {
   ShowZeroValues: true,
   CountOnly: false
 };
+
+exports.viewFilterParams_CEM_Nautilus_Beta1_Download_x64 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '6D57C219-336B-48BF-AAF9-7AC4127B8717',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
+exports.viewFilterParams_CEM_Nautilus_Beta1_Download_x86 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '6B85D4B2-BFF9-4623-A87C-CF86365C52EF',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
