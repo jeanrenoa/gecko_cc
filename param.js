@@ -184,3 +184,27 @@ exports.viewFilterParams_CEM_Nautilus_Beta1_Download_x86 = {
   ShowZeroValues: true,
   CountOnly: false
 };
+
+exports.viewFilterParams_CEM_Nautilus_Beta2_Download_x64 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '0FE22F93-F0CC-46F7-BAD2-219041E104C0',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
+
+exports.viewFilterParams_CEM_Nautilus_Beta2_Download_x86 = {
+  Access_Key: '577FDF3477344436B16441B56B6EEA6E',
+  ProjectID: 'E7F9D0D1-828B-48B9-B0FA-1EB608DC91B5',
+  Context_User_ID: 'B394D280-6325-4D5B-A8D1-757011C121D4',
+  ViewID: '2EF575D2-4E33-435A-B828-743630ECCEBD',
+  CoreFilterID: filter_No_Filter,
+  UserFilterID: '',
+  Page_Number: -1,
+  ShowZeroValues: true,
+  CountOnly: false
+};
