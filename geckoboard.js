@@ -27,6 +27,8 @@ function Geckoboard() {
   var geckoboard_widget_push_url_Nautilus_Beta1_x86_Download = 'https://push.geckoboard.com/v1/send/156024-54178b61-2272-4253-8f2d-ab6e881853c5';
   var geckoboard_widget_push_url_Nautilus_Beta2_x64_Download = 'https://push.geckoboard.com/v1/send/156024-3c6486bf-441f-42e3-bc6e-c58768702fe6';
   var geckoboard_widget_push_url_Nautilus_Beta2_x86_Download = 'https://push.geckoboard.com/v1/send/156024-374b4140-49ca-4825-991b-0896d8579cd5';
+  var geckoboard_widget_push_url_Nautilus_RC_Beta_x64_Download = 'https://push.geckoboard.com/v1/send/156024-0af94028-ec72-4a01-87e9-fe7930c3b846';
+  var geckoboard_widget_push_url_Nautilus_RC_Beta_x86_Download = 'https://push.geckoboard.com/v1/send/156024-b8cafe16-7798-4cc6-bee0-d226a484b3b2';
 
   getvalue = function(val_current, val_pre, widget) {
     var res;
@@ -61,6 +63,8 @@ function Geckoboard() {
       case "Nautilus Beta1 32bit Download":
       case "Nautilus Beta2 64bit Download":
       case "Nautilus Beta2 32bit Download":
+      case "Nautilus RC Beta 64bit Download":
+      case "Nautilus RC Beta 32bit Download":
       case "Maestro SP1 Beta1 Forum Posts":
       case "Forum Post By Internal Tester":
         if (val_pre != 0 && val_pre != undefined) {
@@ -158,6 +162,12 @@ function Geckoboard() {
         break;
       case "Nautilus Beta2 32bit Download":
         geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_Beta2_x86_Download;
+        break;
+      case "Nautilus RC Beta 64bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_RC_Beta_x64_Download;
+        break;
+      case "Nautilus RC Beta 32bit Download":
+        geckoboard_widget_push_url = geckoboard_widget_push_url_Nautilus_RC_Beta_x86_Download;
         break;
       default:
         geckoboard_widget_push_url = '';

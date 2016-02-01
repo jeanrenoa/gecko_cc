@@ -9,7 +9,7 @@ var Geckoboard = require('./geckoboard');
 var geckoboard = new Geckoboard();
 
 var logger = require('./logger');
-logger.debugLevel = 'debug';
+logger.debugLevel = 'release';
 
 var whoami = "whoami";
 
@@ -42,6 +42,8 @@ var projectSchema = new Schema({
   total_download_Nautilus_Beta1_x86: Number,
   total_download_Nautilus_Beta2_x64: Number,
   total_download_Nautilus_Beta2_x86: Number,
+  total_download_Nautilus_RC_Beta_x64: Number,
+  total_download_Nautilus_RC_Beta_x86: Number,
   date: String,
   baseline: Boolean,
   Week: Number
@@ -713,6 +715,86 @@ var jobNumberNautilusBeta2x86Download = function() {
   });
 };
 
+var jobNumberNautilusRCBetax64Download = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Nautilus_RC_Beta_Download_x64;
+  logger.log('release', 'Start Total Nautilus RC Beta 64bit Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD Nautilus RC Beta - 64bit (1 of 2)  '] == 2) {
+        download_counts++;
+      }
+    }
+    logger.log('release', 'Download Numbers: ' + download_counts);
+
+    var data_current = download_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_download_Nautilus_RC_Beta_x64"] != undefined) {
+        data_pre = results_database[i]["total_download_Nautilus_RC_Beta_x64"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Nautilus RC Beta 64bit Download");
+    logger.log('debug', 'Complete Nautilus RC Beta 64bit Download Push.');
+
+    updateDatabase("total_download_Nautilus_RC_Beta_x64", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        logger.log('debug', 'Nautilus RC Beta 64bit Download in database is updated.');
+      });
+    });
+  });
+};
+
+var jobNumberNautilusRCBetax86Download = function() {
+  var today = getDateToday();
+
+  queryDatabase();  // Store the result queried from database into results_database
+
+  param_cc = param.viewFilterParams_CEM_Nautilus_RC_Beta_Download_x86;
+  logger.log('release', 'Start Total Nautilus RC Beta 32bit Downloads Query.');
+
+  centercode.getData(url_live_site, param_cc, function(data){
+    var download_counts = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i]['AutoCAD Nautilus RC Beta - 32bit '] == 2) {
+        download_counts++;
+      }
+    }
+    logger.log('release', 'Download Numbers: ' + download_counts);
+
+    var data_current = download_counts;
+    var data_pre = 0;
+
+    var lastday = getLastDate(1);
+    for (var i = 0, flag = 0; (i < results_database.length) && (flag == 0); i++) {
+      if (results_database[i]["date"] == lastday && results_database[i]["total_download_Nautilus_RC_Beta_x86"] != undefined) {
+        data_pre = results_database[i]["total_download_Nautilus_RC_Beta_x86"];
+        flag = 1;
+      }
+    }
+
+    geckoboard.geckoPush(data_current, data_pre, "Nautilus RC Beta 32bit Download");
+    logger.log('debug', 'Complete Nautilus RC Beta 32bit Download Push.');
+
+    updateDatabase("total_download_Nautilus_RC_Beta_x86", data_current, today, function() {
+      Project.find({},function(err, res){
+        if (err) throw err;
+        logger.log('debug', 'Nautilus RC Beta 32bit Download in database is updated.');
+      });
+    });
+  });
+};
+
 var jobNumberForumPostByInternalTester = function() {
   var today = getDateToday();
 
@@ -941,9 +1023,16 @@ var jobBarChartWeeklyProjectLogin = function() {
       currentDate = getFormattedDate(LastDates[1]); // Set current date to the ending date of last week
     } while (filterResult1.length != 0);
 
-    data_current[0] = weekly_date;
-    data_current[1] = weekly_num;
-    console.log("weekly:", weekly_date);
+    if (weekly_date.length > 9) {
+      data_current[0] = weekly_date.slice(0,9);
+      data_current[1] = weekly_num.slice(0,9);
+    }
+    else {
+      data_current[0] = weekly_date;
+      data_current[1] = weekly_num;
+    }
+
+    console.log("weekly:", data_current);
     if (weekly_date.length != 0) {
       geckoboard.geckoPush(data_current, data_pre, "Weekly Project Login");
     }
@@ -968,13 +1057,13 @@ var runRightNow = function() {
   //jobHandler('Total Forum Posts');
   //jobNumberForumPost();
   //jobNumberForumPostByInternalTester();
-  //jobNumberNautilusBeta2x86Download();
+  //jobBarChartWeeklyProjectLogin();
 
 
   runFunctionByTimeout(jobNumberForumPost, 0);
   runFunctionByTimeout(jobLineChartProjectLogin, 5);
-  runFunctionByTimeout(jobNumberNautilusBeta2x64Download, 10);
-  runFunctionByTimeout(jobNumberNautilusBeta2x86Download, 15);
+  runFunctionByTimeout(jobNumberNautilusRCBetax64Download, 10);
+  runFunctionByTimeout(jobNumberNautilusRCBetax86Download, 15);
   runFunctionByTimeout(jobNumberForumPostByInternalTester, 20);
   runFunctionByTimeout(jobBarChartWeeklyProjectLogin, 25);
 
